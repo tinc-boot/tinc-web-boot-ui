@@ -1,17 +1,47 @@
+import './index.css'
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
+import {dispatcher} from "./store";
+import {SWStatus} from "./store/slices/system";
+import {App} from "./bootstrap/App";
+import {faInit} from "./bootstrap/fa";
+
+console.log('!!! Start ui')
+
+console.log('!!! ', document.getElementById('root'))
+
+faInit()
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App/>
   </React.StrictMode>,
   document.getElementById('root')
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.register({
+  onRegistration: reg => {
+    if (reg.waiting || reg.installing) {
+      dispatcher.system.setStatus(SWStatus.WAITING)
+    }
+    if (reg.active) {
+      dispatcher.system.setSW(reg.active)
+    }
+  },
+  onUpdate: reg => {
+    if (reg.waiting || reg.installing) {
+      dispatcher.system.setStatus(SWStatus.WAITING)
+    }
+    if (reg.active) {
+      dispatcher.system.setSW(reg.active)
+    }
+  },
+  onSuccess: reg => {
+    dispatcher.system.setStatus(SWStatus.ACTIVE);
+    if (reg.active) {
+      dispatcher.system.setSW(reg.active)
+    }
+  }
+});
