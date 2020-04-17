@@ -1,5 +1,5 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {faNetworkWired, faPause, faPlay, faSpinner} from '@fortawesome/free-solid-svg-icons'
+import {faNetworkWired, faPause, faPlay, faPlus, faSpinner} from '@fortawesome/free-solid-svg-icons'
 import _ from 'lodash'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {IconDefinition} from "@fortawesome/fontawesome-common-types";
@@ -11,7 +11,8 @@ export const fa = {
   faSpinner,
   faNetworkWired,
   faPlay,
-  faPause
+  faPause,
+  faPlus
 };
 
 export const faInit = () => {

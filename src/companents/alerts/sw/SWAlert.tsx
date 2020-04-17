@@ -4,7 +4,6 @@ import {useStateSelector} from "../../../hooks/system/useStateSelector";
 import {Button} from "@material-ui/core";
 import {SWStatus} from "../../../store/slices/system";
 
-
 export const SWAlert = () => {
   const status = useStateSelector( s => s.system.status),
     sw = useStateSelector(s => s.system.sw);

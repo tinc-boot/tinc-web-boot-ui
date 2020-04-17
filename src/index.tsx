@@ -8,9 +8,7 @@ import {SWStatus} from "./store/slices/system";
 import {App} from "./bootstrap/App";
 import {faInit} from "./bootstrap/fa";
 
-console.log('!!! Start ui')
-
-console.log('!!! ', document.getElementById('root'))
+console.log('Start ui!')
 
 faInit()
 
@@ -26,22 +24,28 @@ serviceWorker.register({
     if (reg.waiting || reg.installing) {
       dispatcher.system.setStatus(SWStatus.WAITING)
     }
-    if (reg.active) {
-      dispatcher.system.setSW(reg.active)
+    if (reg.waiting) {
+      dispatcher.system.setSW(reg.waiting)
+    } else if (reg.installing) {
+      dispatcher.system.setSW(reg.installing)
     }
   },
   onUpdate: reg => {
     if (reg.waiting || reg.installing) {
       dispatcher.system.setStatus(SWStatus.WAITING)
     }
-    if (reg.active) {
-      dispatcher.system.setSW(reg.active)
+    if (reg.waiting) {
+      dispatcher.system.setSW(reg.waiting)
+    } else if (reg.installing) {
+      dispatcher.system.setSW(reg.installing)
     }
   },
   onSuccess: reg => {
     dispatcher.system.setStatus(SWStatus.ACTIVE);
-    if (reg.active) {
-      dispatcher.system.setSW(reg.active)
+    if (reg.waiting) {
+      dispatcher.system.setSW(reg.waiting)
+    } else if (reg.installing) {
+      dispatcher.system.setSW(reg.installing)
     }
   }
 });

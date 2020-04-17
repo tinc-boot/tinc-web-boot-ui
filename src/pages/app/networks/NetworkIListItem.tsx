@@ -1,8 +1,8 @@
 import {IconButton, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText, useTheme} from "@material-ui/core";
-import {Icon, IconType} from "../../companents/icon/Icon";
+import {Icon, IconType} from "../../../companents/icon/Icon";
 import React, {useMemo} from "react";
-import {Network} from "../../api/api";
-import {useNetwork} from "../../hooks/api/useNetwork";
+import {Network} from "../../../api/api";
+import {useNetwork} from "../../../hooks/api/useNetwork";
 
 type P = {
   network: Network

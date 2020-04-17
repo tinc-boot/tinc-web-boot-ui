@@ -1,40 +1,32 @@
-import React, {useEffect} from "react"
+import React from "react"
 import {Page} from "../../companents/page/Page";
-import {
-  Container,
-  List,
-  Typography,
-  LinearProgress,
-  Paper, Box,
-} from "@material-ui/core";
-import {useNetworks} from "../../hooks/api/useNetworks";
-import {NetworkIListItem} from "./NetworkIListItem";
+import { Route, Switch, Redirect } from "react-router-dom";
+import {NetworksPage} from "./networks/NetworksPage";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import styled from "@material-ui/core/styles/styled";
+import {AddNetworksPage} from "./add-networks/AddNetworksPage";
 
+export const LinearProgressFixed = styled(LinearProgress)({
+  position: 'fixed',
+  left: 0,
+  right: 0
+})
 
 export const AppPage = () => {
-  const {networks, loadNetworks, fetching} = useNetworks();
-
-  useEffect(() => {
-    loadNetworks()
-  }, [loadNetworks])
-
-  console.log('!!! AppPage')
 
   return (
     <Page>
-      {fetching && <LinearProgress color='secondary'/>}
-      <Container maxWidth='md'>
-        <Typography color='textPrimary' variant='h1'>Networks</Typography>
-        <Box mt={3}>
-          <Paper elevation={2}>
-            {networks && <List>
-              {networks?.map((n) => (
-                <NetworkIListItem key={'network-'+n.name} network={n}/>
-              ))}
-            </List>}
-          </Paper>
-        </Box>
-      </Container>
+      <Switch>
+        <Route path='/app/add-networks'>
+          <AddNetworksPage />
+        </Route>
+        <Route path='/app/networks'>
+          <NetworksPage />
+        </Route>
+        <Route path='/app'>
+          <Redirect to='/app/networks' />
+        </Route>
+      </Switch>
     </Page>
   )
 }

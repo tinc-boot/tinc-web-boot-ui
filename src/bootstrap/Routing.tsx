@@ -4,7 +4,6 @@ import {AppPage} from "../pages/app/AppPage";
 
 
 export const Routing = () => {
-  console.log('!!! Routing')
   return (
     <HashRouter>
       <Switch>

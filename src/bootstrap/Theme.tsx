@@ -1,5 +1,6 @@
 import React, {useMemo} from "react"
 import {createMuiTheme, useMediaQuery, ThemeProvider, ThemeProviderProps, responsiveFontSizes} from "@material-ui/core";
+import {blue} from "@material-ui/core/colors";
 
 type P = Omit<ThemeProviderProps, 'theme'>
 
@@ -8,6 +9,7 @@ export const Theme = ({children, ...rest}: P) => {
 
   const theme = useMemo(() => responsiveFontSizes(createMuiTheme({
     palette: {
+      primary: blue,
       type: isDarkMode ? 'dark' : 'light',
     },
     typography: {

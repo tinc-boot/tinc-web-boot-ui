@@ -17,10 +17,18 @@ export function useNetworks() {
     }
   }, [api, withFetching]);
 
+  const createNetwork = useCallback( async (name: string) => {
+    try {
+      const n = await withFetching(api.create(name))
+      dispatcher.networks.add(n)
+    } finally {
+    }
+  }, [api, withFetching])
+
   useEffect(() => {
     events.onStarted(loadNetworks);
     events.onStopped(loadNetworks);
   }, [events, loadNetworks])
 
-  return {networks, loadNetworks, fetching}
+  return {networks, loadNetworks, fetching, createNetwork}
 }
