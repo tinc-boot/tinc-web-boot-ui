@@ -2,12 +2,14 @@ import {useCallback, useState} from "react";
 import {useApi} from "./useApi";
 import {useFetching} from "../system/useFetching";
 import {dispatcher} from "../../store";
-import {Network, Node} from "../../api/api";
+import {Node} from "../../api/api";
+import {useStateSelector} from "../system/useStateSelector";
+import _ from "lodash";
 
 
 export function useNetwork(name: string) {
   const {api} = useApi(),
-    [network, setNetwork] = useState<Network>(),
+    network = useStateSelector(s => _.find(s.networks.list, {name})),
     [node, setNode] = useState<Node>(),
     {fetching, withFetching} = useFetching();
 
@@ -17,7 +19,7 @@ export function useNetwork(name: string) {
         nodeP = api.node(name);
       const network = await networkP,
         node = await nodeP;
-      setNetwork(network);
+      dispatcher.networks.add(network);
       setNode(node);
     })())
   }, [api, name, withFetching])
