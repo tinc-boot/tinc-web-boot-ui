@@ -21,6 +21,11 @@ export const networksSlice = createSlice({
       const list = s.list || [];
       _.remove(list, n => n.name === a.payload.name)
       s.list = sort([...list, a.payload])
+    },
+    remove: (s: NetworksState, a: PayloadAction<string>) => {
+      const list = s.list || [];
+      _.remove(list, n => n.name === a.payload)
+      s.list = sort([...list])
     }
   }
 })

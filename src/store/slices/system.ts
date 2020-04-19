@@ -6,13 +6,21 @@ export enum SWStatus {
   ACTIVE
 }
 
+export enum ThemeMode {
+  DARK,
+  LIGHT
+}
 
 export interface SystemState {
   status?: SWStatus,
-  sw?: ServiceWorker,
+  sw?: ServiceWorker | null,
+  fetching: number,
+  themeMode?: ThemeMode,
 }
 
-const initialState: SystemState = {};
+const initialState: SystemState = {
+  fetching: 0,
+};
 
 export const systemSlice = createSlice({
   name: 'system',
@@ -20,5 +28,12 @@ export const systemSlice = createSlice({
   reducers: {
     setStatus: setter(initialState, 'status'),
     setSW: setter(initialState, 'sw'),
+    setThemeMode: setter(initialState, 'themeMode'),
+    inc: (s: SystemState) => {
+      s.fetching += 1
+    },
+    dec: (s: SystemState) => {
+      s.fetching -= 1
+    }
   }
 });

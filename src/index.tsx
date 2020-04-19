@@ -8,8 +8,6 @@ import {SWStatus} from "./store/slices/system";
 import {App} from "./bootstrap/App";
 import {faInit} from "./bootstrap/fa";
 
-console.log('Start ui!')
-
 faInit()
 
 ReactDOM.render(
@@ -23,16 +21,16 @@ serviceWorker.register({
   onRegistration: reg => {
     if (reg.waiting || reg.installing) {
       dispatcher.system.setStatus(SWStatus.WAITING)
+    } else {
+      dispatcher.system.setStatus(SWStatus.ACTIVE)
     }
-    if (reg.waiting) {
-      dispatcher.system.setSW(reg.waiting)
-    } else if (reg.installing) {
-      dispatcher.system.setSW(reg.installing)
-    }
+    dispatcher.system.setSW(reg.waiting)
   },
   onUpdate: reg => {
     if (reg.waiting || reg.installing) {
       dispatcher.system.setStatus(SWStatus.WAITING)
+    } else {
+      dispatcher.system.setStatus(SWStatus.ACTIVE)
     }
     if (reg.waiting) {
       dispatcher.system.setSW(reg.waiting)

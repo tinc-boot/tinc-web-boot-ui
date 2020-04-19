@@ -1,11 +1,12 @@
 import React, {useMemo} from "react"
-import {createMuiTheme, useMediaQuery, ThemeProvider, ThemeProviderProps, responsiveFontSizes} from "@material-ui/core";
+import {createMuiTheme, ThemeProvider, ThemeProviderProps, responsiveFontSizes} from "@material-ui/core";
 import {blue} from "@material-ui/core/colors";
+import {useThemeMode} from "../hooks/system/useThemeMode";
 
 type P = Omit<ThemeProviderProps, 'theme'>
 
 export const Theme = ({children, ...rest}: P) => {
-  const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const {isDarkMode} = useThemeMode()
 
   const theme = useMemo(() => responsiveFontSizes(createMuiTheme({
     palette: {

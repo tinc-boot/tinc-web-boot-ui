@@ -12,7 +12,7 @@ export const Page = ({children}: P) => {
   return (
     <>
       <WebBootAppBar />
-      <Box mt={8}>
+      <Box mt={9}>
         <SWAlert />
         {children}
       </Box>

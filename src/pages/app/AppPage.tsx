@@ -1,32 +1,28 @@
-import React from "react"
+import React from "react";
 import {Page} from "../../companents/page/Page";
-import { Route, Switch, Redirect } from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 import {NetworksPage} from "./networks/NetworksPage";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import styled from "@material-ui/core/styles/styled";
-import {AddNetworksPage} from "./add-networks/AddNetworksPage";
-
-export const LinearProgressFixed = styled(LinearProgress)({
-  position: 'fixed',
-  left: 0,
-  right: 0
-})
+import {Container} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import {NetworkList} from "./networks/NetworkList";
 
 export const AppPage = () => {
-
   return (
     <Page>
-      <Switch>
-        <Route path='/app/add-networks'>
-          <AddNetworksPage />
-        </Route>
-        <Route path='/app/networks'>
-          <NetworksPage />
-        </Route>
-        <Route path='/app'>
-          <Redirect to='/app/networks' />
-        </Route>
-      </Switch>
+      <Container maxWidth="lg">
+        <Grid container spacing={1}>
+          <Grid item md={false} lg={3}>
+            <NetworkList/>
+          </Grid>
+          <Grid item md={12} lg={9}>
+            <Switch>
+              <Route path="/app/networks">
+                <NetworksPage/>
+              </Route>
+            </Switch>
+          </Grid>
+        </Grid>
+      </Container>
     </Page>
-  )
-}
+  );
+};

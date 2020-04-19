@@ -31,7 +31,7 @@ export const SWAlert = () => {
         FORCE UPDATE
       </Button>
     }>
-      <div>TincWebBoot site has been updated, please press the button to update this session. Please reload all other tabs where crix.io is open</div>
+      <div>TincWebBoot site has been updated, please press the button to update this session. Please reload all other tabs open</div>
     </Alert>
   )
 }

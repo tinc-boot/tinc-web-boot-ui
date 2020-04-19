@@ -5,10 +5,3 @@ html, body {
   min-height: 100vh;
   font-size: 14px;
 }
-
-@media (prefers-color-scheme: dark) {
-  html, body {
-    background-color: #121212;
-    color: #ddd;
-  }
-}
