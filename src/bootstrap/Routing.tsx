@@ -7,10 +7,8 @@ export const Routing = () => {
   return (
     <HashRouter>
       <Switch>
-        <Route path='/app'>
-          <AppPage />
-        </Route>
-        <Route exact path='/'>
+        <Route path='/app' component={AppPage} />
+        <Route path='*'>
           <Redirect to='/app' />
         </Route>
       </Switch>

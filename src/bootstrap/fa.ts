@@ -7,6 +7,7 @@ import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {faTimes} from "@fortawesome/free-solid-svg-icons/faTimes";
 import {faSun} from "@fortawesome/free-solid-svg-icons/faSun";
 import {faMoon} from "@fortawesome/free-solid-svg-icons/faMoon";
+import {faChevronLeft} from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 
 // IconDefinition
 //const i: IconDefinition =
@@ -18,6 +19,7 @@ export const fa = {
   faPause,
   faPlus,
   faChevronRight,
+  faChevronLeft,
   faCheck,
   faTimes,
   faSun,

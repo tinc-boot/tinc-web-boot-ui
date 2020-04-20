@@ -1,20 +1,24 @@
 import React from "react";
 import {Page} from "../../companents/page/Page";
-import {Route, Switch} from "react-router-dom";
+import {Route, Switch, useRouteMatch} from "react-router-dom";
 import {NetworksPage} from "./networks/NetworksPage";
-import {Container} from "@material-ui/core";
+import {Container, useMediaQuery, useTheme} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {NetworkList} from "./networks/NetworkList";
 
 export const AppPage = () => {
+  const matchNetworks = useRouteMatch('/app/networks/:id'),
+    theme = useTheme(),
+    isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   return (
     <Page>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Grid container spacing={1}>
-          <Grid item md={false} lg={3}>
+          <Grid item xs={12} md={5} lg={4} hidden={isMobile && !!matchNetworks}>
             <NetworkList/>
           </Grid>
-          <Grid item md={12} lg={9}>
+          <Grid item xs={12} md={7} lg={8} hidden={isMobile && !matchNetworks}>
             <Switch>
               <Route path="/app/networks">
                 <NetworksPage/>
