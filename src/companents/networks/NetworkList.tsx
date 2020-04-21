@@ -9,14 +9,14 @@ import {
   TextField,
 } from "@material-ui/core";
 import { NetworkIListItem } from "./NetworkIListItem";
-import { useNetworks } from "../../../hooks/api/useNetworks";
+import { useNetworks } from "../../hooks/api/useNetworks";
 import { useHistory } from "react-router-dom";
-import { Icon } from "../../../companents/icon/Icon";
+import { Icon } from "../icon/Icon";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import {Network} from "../../../api/tincweb";
+import {Network} from "../../api/tincweb";
 
 const variants: Variants = {
   visible: {

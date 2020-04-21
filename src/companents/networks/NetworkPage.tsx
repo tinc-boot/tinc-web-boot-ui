@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useMemo} from "react";
 import IconButton from "@material-ui/core/IconButton";
-import {Icon, IconType} from "../../../companents/icon/Icon";
+import {Icon, IconType} from "../icon/Icon";
 import Divider from "@material-ui/core/Divider";
 import {Box, Typography} from "@material-ui/core";
 import styled from "@material-ui/core/styles/styled";
-import {useNetwork} from "../../../hooks/api/useNetwork";
+import {useNetwork} from "../../hooks/api/useNetwork";
 import Button from "@material-ui/core/Button";
 import {useHistory} from "react-router";
 

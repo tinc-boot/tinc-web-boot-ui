@@ -1,10 +1,10 @@
 import React from "react";
 import {Page} from "../../companents/page/Page";
 import {Route, Switch, useRouteMatch} from "react-router-dom";
-import {NetworksPage} from "./networks/NetworksPage";
+import {NetworksPage} from "../../companents/networks/NetworksPage";
 import {Container, useMediaQuery, useTheme} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import {NetworkList} from "./networks/NetworkList";
+import {NetworkList} from "../../companents/networks/NetworkList";
 
 export const AppPage = () => {
   const matchNetworks = useRouteMatch('/app/networks/:id'),
