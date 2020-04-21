@@ -1,5 +1,3 @@
-import {TincWebError} from "./tincweb";
-
 export class TincWebUIError extends Error {
     public readonly code: number;
     public readonly details: any;
@@ -11,6 +9,19 @@ export class TincWebUIError extends Error {
     }
 }
 
+
+export interface Endpoint {
+    host: string
+    port: number
+    kind: EndpointKind
+}
+
+
+
+export enum EndpointKind {
+    Local = "local",
+    Public = "public",
+}
 
 
 // support stuff
@@ -145,8 +156,8 @@ class postExecutor {
 }
 
 /**
-Operations with tinc-web-boot related to UI
-**/
+ Operations with tinc-web-boot related to UI
+ **/
 export class TincWebUI {
 
     private __id: number;
@@ -174,8 +185,8 @@ export class TincWebUI {
 
 
     /**
-    Issue and sign token
-    **/
+     Issue and sign token
+     **/
     async issueAccessToken(validDays: number): Promise<string> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -186,8 +197,8 @@ export class TincWebUI {
     }
 
     /**
-    Make desktop notification if system supports it
-    **/
+     Make desktop notification if system supports it
+     **/
     async notify(title: string, message: string): Promise<boolean> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -195,6 +206,18 @@ export class TincWebUI {
             "id" : this.__next_id(),
             "params" : [title, message]
         })) as boolean;
+    }
+
+    /**
+     Endpoints list to access web UI
+     **/
+    async endpoints(): Promise<Array<Endpoint>> {
+        return (await this.__call({
+            "jsonrpc" : "2.0",
+            "method" : "TincWebUI.Endpoints",
+            "id" : this.__next_id(),
+            "params" : []
+        })) as Array<Endpoint>;
     }
 
 
@@ -214,7 +237,7 @@ export class TincWebUI {
         }
 
         if (data.error) {
-            throw new TincWebError(data.error.message, data.error.code, data.error.data);
+            throw new TincWebUIError(data.error.message, data.error.code, data.error.data);
         }
 
         return data.result;
