@@ -1,6 +1,6 @@
 import {useCallback, useState} from "react";
-import {TincWeb} from "../../api/api";
 import {Events} from "../../api/events";
+import {TincWeb} from "../../api/tincweb";
 
 let _api: TincWeb = new TincWeb();
 let _events: Events = new Events('ws://127.0.0.1:8686/api/events');

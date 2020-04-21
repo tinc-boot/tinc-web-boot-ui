@@ -199,8 +199,8 @@ class postExecutor {
 }
 
 /**
- Public Tinc-Web API (json-rpc 2.0)
- **/
+Public Tinc-Web API (json-rpc 2.0)
+**/
 export class TincWeb {
 
     private __id: number;
@@ -208,7 +208,7 @@ export class TincWeb {
 
 
     // Create new API handler to TincWeb.
-    constructor(base_url : string = 'ws://127.0.0.1:8686/api') {
+    constructor(base_url : string = 'ws://127.0.0.1:8686/api/') {
         const proto = (new URL(base_url)).protocol;
         switch (proto) {
             case "ws:":
@@ -228,8 +228,8 @@ export class TincWeb {
 
 
     /**
-     List of available networks (briefly, without config)
-     **/
+    List of available networks (briefly, without config)
+    **/
     async networks(): Promise<Array<Network>> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -240,8 +240,8 @@ export class TincWeb {
     }
 
     /**
-     Detailed network info
-     **/
+    Detailed network info
+    **/
     async network(name: string): Promise<Network> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -252,8 +252,8 @@ export class TincWeb {
     }
 
     /**
-     Create new network if not exists
-     **/
+    Create new network if not exists
+    **/
     async create(name: string): Promise<Network> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -264,8 +264,8 @@ export class TincWeb {
     }
 
     /**
-     Remove network (returns true if network existed)
-     **/
+    Remove network (returns true if network existed)
+    **/
     async remove(network: string): Promise<boolean> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -276,8 +276,8 @@ export class TincWeb {
     }
 
     /**
-     Start or re-start network
-     **/
+    Start or re-start network
+    **/
     async start(network: string): Promise<Network> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -288,8 +288,8 @@ export class TincWeb {
     }
 
     /**
-     Stop network
-     **/
+    Stop network
+    **/
     async stop(network: string): Promise<Network> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -300,8 +300,8 @@ export class TincWeb {
     }
 
     /**
-     Peers brief list in network  (briefly, without config)
-     **/
+    Peers brief list in network  (briefly, without config)
+    **/
     async peers(network: string): Promise<Array<PeerInfo>> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -312,8 +312,8 @@ export class TincWeb {
     }
 
     /**
-     Peer detailed info by in the network
-     **/
+    Peer detailed info by in the network
+    **/
     async peer(network: string, name: string): Promise<PeerInfo> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -324,10 +324,10 @@ export class TincWeb {
     }
 
     /**
-     Import another tinc-web network configuration file.
-     It means let nodes defined in config join to the network.
-     Return created (or used) network with full configuration
-     **/
+    Import another tinc-web network configuration file.
+It means let nodes defined in config join to the network.
+Return created (or used) network with full configuration
+    **/
     async import(sharing: Sharing): Promise<Network> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -338,8 +338,8 @@ export class TincWeb {
     }
 
     /**
-     Share network and generate configuration file.
-     **/
+    Share network and generate configuration file.
+    **/
     async share(network: string): Promise<Sharing> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -350,8 +350,8 @@ export class TincWeb {
     }
 
     /**
-     Node definition in network (aka - self node)
-     **/
+    Node definition in network (aka - self node)
+    **/
     async node(network: string): Promise<Node> {
         return (await this.__call({
             "jsonrpc" : "2.0",
@@ -362,9 +362,9 @@ export class TincWeb {
     }
 
     /**
-     Upgrade node parameters.
-     In some cases requires restart
-     **/
+    Upgrade node parameters.
+In some cases requires restart
+    **/
     async upgrade(network: string, update: Upgrade): Promise<Node> {
         return (await this.__call({
             "jsonrpc" : "2.0",

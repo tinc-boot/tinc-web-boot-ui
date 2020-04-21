@@ -1,7 +1,7 @@
-import {Network} from "../../api/api";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {setter} from "../utils/setter";
 import _ from "lodash";
+import {Network} from "../../api/tincweb";
 
 
 export interface NetworksState {

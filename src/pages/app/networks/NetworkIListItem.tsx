@@ -7,8 +7,8 @@ import {
 } from "@material-ui/core";
 import { Icon } from "../../../companents/icon/Icon";
 import React, {useCallback, useMemo} from "react";
-import { Network } from "../../../api/api";
 import {motion} from 'framer-motion'
+import {Network} from "../../../api/tincweb";
 
 type P = {
   network: Network;
