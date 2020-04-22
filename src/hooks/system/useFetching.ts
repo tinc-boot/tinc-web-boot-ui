@@ -2,21 +2,23 @@ import {useCallback, useState} from "react";
 import {useStateSelector} from "./useStateSelector";
 import {dispatcher} from "../../store";
 
+type Task<T> = Promise<T> | (() => Promise<T>)
 
 export const useFetching = () => {
   const globalFetching = useStateSelector(s => s.system.fetching),
     [fetching, setFetching] = useState(false);
 
-  const withFetching = useCallback( <T>(task: Promise<T>): Promise<T> => {
+  const withFetching = useCallback( <T>(task: Task<T>): Promise<T> => {
     dispatcher.system.inc();
     setFetching(true);
-    task.finally(() => {
+    const p = typeof task === 'function' ? task() : task;
+    p.finally(() => {
       setTimeout(() => {
         dispatcher.system.dec();
         setFetching(false);
-      }, 200)
+      }, 100)
     });
-    return task;
+    return p;
   }, []);
 
   return {globalFetching, fetching, withFetching}

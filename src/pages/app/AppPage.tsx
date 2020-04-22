@@ -16,7 +16,7 @@ export const AppPage = () => {
       <Container maxWidth="xl">
         <Grid container spacing={1}>
           <Grid item xs={12} md={5} lg={4} hidden={isMobile && !!matchNetworks}>
-            <NetworkList/>
+            <NetworkList isMobile={isMobile}/>
           </Grid>
           <Grid item xs={12} md={7} lg={8} hidden={isMobile && !matchNetworks}>
             <Switch>
