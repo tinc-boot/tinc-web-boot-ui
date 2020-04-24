@@ -2,11 +2,12 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import IconButton from "@material-ui/core/IconButton";
 import {Icon, IconType} from "../icon/Icon";
 import Divider from "@material-ui/core/Divider";
-import {Box, Typography} from "@material-ui/core";
+import {Box, ButtonGroup, Typography} from "@material-ui/core";
 import styled from "@material-ui/core/styles/styled";
 import {useNetwork} from "../../hooks/api/useNetwork";
 import Button from "@material-ui/core/Button";
 import {useHistory} from "react-router";
+import FileSaver from "file-saver";
 
 const Header = styled(Box)({
   display: "flex",
@@ -24,7 +25,7 @@ type P = {
 }
 
 export const NetworkPage = (p: P) => {
-  const {network, node, start, stop, remove, fetching, loadNetwork} = useNetwork(p.networkName),
+  const {network, node, start, stop, remove, fetching, loadNetwork, shared} = useNetwork(p.networkName),
     history = useHistory()
 
   const {icon, onAction} = useMemo(() => ({
@@ -35,6 +36,11 @@ export const NetworkPage = (p: P) => {
   const onRemove = useCallback(() => {
     remove().finally(() => history.push('/app'))
   }, [history, remove])
+
+  const onShared = useCallback(async () => {
+    const res = await shared()
+    FileSaver.saveAs(new Blob([res], {type: "text/plain;charset=utf-8"}), p.networkName+'.twbsn')
+  }, [p.networkName, shared])
 
   useEffect(() => {
     loadNetwork()
@@ -56,9 +62,14 @@ export const NetworkPage = (p: P) => {
           <Typography variant='subtitle1'>subnet: {node.subnet}</Typography>
         )
       }
-      <Button disabled={fetching} color='secondary' onClick={onRemove}>
-        delete
-      </Button>
+      <ButtonGroup variant='outlined'>
+        <Button disabled={fetching} color='primary' onClick={onShared}>
+          shared
+        </Button>
+        <Button disabled={fetching} color='secondary' onClick={onRemove}>
+          delete
+        </Button>
+      </ButtonGroup>
     </>
   )
 }

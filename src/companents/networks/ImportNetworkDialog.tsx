@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, {useCallback, useState} from "react";
 import {
   Button,
   Dialog,
@@ -9,10 +9,10 @@ import {
   styled,
   TextField,
 } from "@material-ui/core";
-import { useForm } from "react-hook-form";
+import {useForm} from "react-hook-form";
 import * as yup from "yup";
-import { useNetworks } from "../../hooks/api/useNetworks";
-import { TransitionProps } from "@material-ui/core/transitions";
+import {useNetworks} from "../../hooks/api/useNetworks";
+import {TransitionProps} from "@material-ui/core/transitions";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement<any, any> },
@@ -28,11 +28,25 @@ const FlexContent = styled(DialogContent)({
 });
 
 type ImportNetworkForm = {
-  shared64: string;
+  name: string;
+  sharedFile: FileList
 };
 
 const validationSchema = yup.object().shape({
-  shared64: yup.string().required(),
+  name: yup
+    .string()
+    .notRequired()
+    .matches(/^[a-zA-Z0-9\-_@#%!&$]*$/)
+    .min(3)
+    .max(16),
+  sharedFile: yup.mixed().required()
+});
+
+const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsText(file);
+  reader.onload = () => resolve(reader.result as string);
+  reader.onerror = error => reject(error);
 });
 
 type P = {
@@ -40,17 +54,24 @@ type P = {
 };
 
 export const ImportNetworkDialog = (p: P) => {
-  const { importNetwork } = useNetworks(),
+  const {importNetwork} = useNetworks(),
     [isNew, setNew] = useState(false),
-    { register, errors, handleSubmit } = useForm<ImportNetworkForm>({
+    {register, errors, handleSubmit, watch} = useForm<ImportNetworkForm>({
       validationSchema,
     });
 
+  const file = watch('sharedFile')
+
   const onImport = useCallback(
     async (data: ImportNetworkForm) => {
-      importNetwork(data.shared64).then(
-        (isSuccess) => isSuccess && setNew(false)
-      );
+      const sharedFile = data.sharedFile.item(0)
+      if (sharedFile) {
+        const shared64 = await toBase64(sharedFile)
+        importNetwork(shared64, data.name).then(
+          (isSuccess) => isSuccess && setNew(false)
+        );
+      }
+
     },
     [importNetwork]
   );
@@ -73,24 +94,46 @@ export const ImportNetworkDialog = (p: P) => {
           <DialogTitle>Import Network</DialogTitle>
           <FlexContent>
             {isNew && (
-              <TextField
-                name="shared64"
-                inputRef={register}
-                error={!!errors.shared64}
-                helperText={errors?.shared64?.message}
-                label="Shared content"
-                rows={15}
-                fullWidth
-                multiline
-                variant="outlined"
-              />
-            ) }
+              <>
+                <TextField
+                  name="name"
+                  inputRef={register}
+                  error={!!errors.name}
+                  helperText={errors?.name?.message}
+                  label="Network name"
+                  margin='normal'
+                  fullWidth
+                />
+                {file && file.length > 0 && (
+                  <TextField
+                    margin='normal'
+                    label='file:'
+                    value={file.item(0)?.name}
+                    fullWidth
+                    disabled
+                  />
+                )}
+                <Button
+                  variant="contained"
+                  component="label"
+                  disabled={!!file}
+                >
+                  Upload File
+                  <input
+                    ref={register}
+                    name='sharedFile'
+                    type="file"
+                    style={{display: "none"}}
+                  />
+                </Button>
+              </>
+            )}
           </FlexContent>
           <DialogActions>
             <Button type="submit" color="primary" variant="outlined">
               import
             </Button>
-            <Button color="default" variant="outlined" onClick={()=>setNew(false)}>
+            <Button color="default" variant="outlined" onClick={() => setNew(false)}>
               cancel
             </Button>
           </DialogActions>

@@ -30,15 +30,16 @@ export function useNetworks() {
     }
   }, [api, withFetching])
 
-  const importNetwork = useCallback(async (shared64: string) => {
+  const importNetwork = useCallback(async (shared64: string, name?: string) => {
     return await withFetching(async () => {
       try {
         const shared: Sharing = JSON.parse(atob(shared64));
-        const n = await api.import(shared);
+        const n = await api.import(name ? {...shared, name} : shared);
         dispatcher.networks.add(n)
         return true
       } catch (e) {
         // TODO notify error
+        console.error(e)
         return false
       } finally {
       }
@@ -46,8 +47,8 @@ export function useNetworks() {
   }, [api, withFetching])
 
   useEffect(() => {
-    // events.onStarted(loadNetworks);
-    // events.onStopped(loadNetworks);
+    events.onStarted(loadNetworks);
+    events.onStopped(loadNetworks);
   }, [events, loadNetworks])
 
   return {networks, loadNetworks, fetching, createNetwork, importNetwork}
