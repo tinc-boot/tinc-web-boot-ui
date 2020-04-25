@@ -43,7 +43,7 @@ export function useNetwork(name: string) {
 
   const shared = useCallback( async () => {
     const res = await withFetching(api.share(name))
-    return btoa(JSON.stringify(res))
+    return JSON.stringify(res)
   }, [api, name, withFetching])
 
   return {network, node, start, fetching, stop, remove, loadNetwork, shared}

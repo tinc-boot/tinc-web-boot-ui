@@ -33,7 +33,7 @@ export function useNetworks() {
   const importNetwork = useCallback(async (shared64: string, name?: string) => {
     return await withFetching(async () => {
       try {
-        const shared: Sharing = JSON.parse(atob(shared64));
+        const shared: Sharing = JSON.parse(shared64);
         const n = await api.import(name ? {...shared, name} : shared);
         dispatcher.networks.add(n)
         return true
