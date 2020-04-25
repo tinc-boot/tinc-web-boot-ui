@@ -1,14 +1,5 @@
 import React, {useCallback, useState} from "react";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Slide,
-  styled,
-  TextField,
-} from "@material-ui/core";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, styled, TextField,} from "@material-ui/core";
 import {useForm} from "react-hook-form";
 import * as yup from "yup";
 import {useNetworks} from "../../hooks/api/useNetworks";
@@ -42,7 +33,7 @@ const validationSchema = yup.object().shape({
   sharedFile: yup.mixed().required()
 });
 
-const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
+const toPlainText = (file: File) => new Promise<string>((resolve, reject) => {
   const reader = new FileReader();
   reader.readAsText(file);
   reader.onload = () => resolve(reader.result as string);
@@ -66,8 +57,8 @@ export const ImportNetworkDialog = (p: P) => {
     async (data: ImportNetworkForm) => {
       const sharedFile = data.sharedFile.item(0)
       if (sharedFile) {
-        const shared64 = await toBase64(sharedFile)
-        importNetwork(shared64, data.name).then(
+        const sharedJSON = await toPlainText(sharedFile)
+        importNetwork(sharedJSON, data.name).then(
           (isSuccess) => isSuccess && setNew(false)
         );
       }
