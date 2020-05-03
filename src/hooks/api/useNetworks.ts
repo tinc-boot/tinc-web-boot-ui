@@ -5,6 +5,8 @@ import {dispatcher} from "../../store";
 import {useFetching} from "../system/useFetching";
 import {Sharing} from "../../api/tincweb";
 
+const defaultSubnet = '10.165.0.0/16'
+
 export function useNetworks() {
   const {api, events} = useApi();
   const networks = useStateSelector(s => s.networks.list),
@@ -22,7 +24,7 @@ export function useNetworks() {
 
   const createNetwork = useCallback(async (name: string) => {
     try {
-      const n = await withFetching(api.create(name))
+      const n = await withFetching(api.create(name, defaultSubnet))
       dispatcher.networks.add(n)
     } catch (e) {
       // TODO notify error

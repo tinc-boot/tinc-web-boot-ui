@@ -26,22 +26,22 @@ export const WebBootAppBar = () => {
 
   return (
     <>
-      <AppBar position="fixed" color="default">
+      <AppBar color="default" position='relative'>
         <Toolbar>
           <Box hidden={!isMobile}>
             <IconButton disabled={!!matchApp && matchApp.isExact} onClick={history.goBack}>
-              <Icon icon='faChevronLeft' />
+              <Icon icon="faChevronLeft"/>
             </IconButton>
           </Box>
           <Box flexGrow={1}>
             <Typography variant="h6" align={isMobile ? "center" : 'left'}>TincWebBoot</Typography>
           </Box>
           <IconButton onClick={toggleMode}>
-            <Icon icon={isDarkMode ? 'faSun' : 'faMoon'} />
+            <Icon icon={isDarkMode ? 'faSun' : 'faMoon'}/>
           </IconButton>
         </Toolbar>
       </AppBar>
-      {<LinearProgressFixed color="secondary" hidden={!globalFetching} />}
+      {<LinearProgressFixed color="secondary" hidden={!globalFetching}/>}
     </>
   );
 };

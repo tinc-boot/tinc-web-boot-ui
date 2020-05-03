@@ -1,4 +1,4 @@
-export class TincWebUIError extends Error {
+export class TincWebMajordomoError extends Error {
     public readonly code: number;
     public readonly details: any;
 
@@ -10,18 +10,27 @@ export class TincWebUIError extends Error {
 }
 
 
-export interface Endpoint {
-    host: string
+export interface Node {
+    name: string
+    subnet: string
     port: number
-    kind: EndpointKind
+    address: Array<Address> | null
+    publicKey: string
+    version: number
+}
+
+export interface Address {
+    host: string
+    port: number | null
+}
+
+export interface Sharing {
+    name: string
+    subnet: string
+    node: Array<Node> | null
 }
 
 
-
-export enum EndpointKind {
-    Local = "local",
-    Public = "public",
-}
 
 
 // support stuff
@@ -156,15 +165,15 @@ class postExecutor {
 }
 
 /**
-Operations with tinc-web-boot related to UI
+Operations for joining public network
 **/
-export class TincWebUI {
+export class TincWebMajordomo {
 
     private __id: number;
     private __executor:rpcExecutor;
 
 
-    // Create new API handler to TincWebUI.
+    // Create new API handler to TincWebMajordomo.
     constructor(base_url : string = 'ws://127.0.0.1:8686/api/') {
         const proto = (new URL(base_url)).protocol;
         switch (proto) {
@@ -185,39 +194,15 @@ export class TincWebUI {
 
 
     /**
-    Issue and sign token
+    Join public network if code matched. Will generate error if node subnet not matched
     **/
-    async issueAccessToken(validDays: number): Promise<string> {
+    async join(network: string, self: Node): Promise<Sharing> {
         return (await this.__call({
             "jsonrpc" : "2.0",
-            "method" : "TincWebUI.IssueAccessToken",
+            "method" : "TincWebMajordomo.Join",
             "id" : this.__next_id(),
-            "params" : [validDays]
-        })) as string;
-    }
-
-    /**
-    Make desktop notification if system supports it
-    **/
-    async notify(title: string, message: string): Promise<boolean> {
-        return (await this.__call({
-            "jsonrpc" : "2.0",
-            "method" : "TincWebUI.Notify",
-            "id" : this.__next_id(),
-            "params" : [title, message]
-        })) as boolean;
-    }
-
-    /**
-    Endpoints list to access web UI
-    **/
-    async endpoints(): Promise<Array<Endpoint>> {
-        return (await this.__call({
-            "jsonrpc" : "2.0",
-            "method" : "TincWebUI.Endpoints",
-            "id" : this.__next_id(),
-            "params" : []
-        })) as Array<Endpoint>;
+            "params" : [network, self]
+        })) as Sharing;
     }
 
 
@@ -237,7 +222,7 @@ export class TincWebUI {
         }
 
         if (data.error) {
-            throw new TincWebUIError(data.error.message, data.error.code, data.error.data);
+            throw new TincWebMajordomoError(data.error.message, data.error.code, data.error.data);
         }
 
         return data.result;
