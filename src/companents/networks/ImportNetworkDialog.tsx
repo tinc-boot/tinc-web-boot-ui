@@ -1,21 +1,28 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, styled, TextField,} from "@material-ui/core";
 import {useForm} from "react-hook-form";
 import * as yup from "yup";
 import {useNetworks} from "../../hooks/api/useNetworks";
 import {TransitionProps} from "@material-ui/core/transitions";
 
+const Content = styled(DialogContent)({
+  flexGrow: 1,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+});
+
+const Form = styled('form')({
+  flexGrow: 1,
+  display: 'flex',
+  flexDirection: 'column'
+})
+
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement<any, any> },
   ref: React.Ref<unknown>
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const FlexContent = styled(DialogContent)({
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
 });
 
 type ImportNetworkForm = {
@@ -41,12 +48,14 @@ const toPlainText = (file: File) => new Promise<string>((resolve, reject) => {
 });
 
 type P = {
+  isOpen: boolean;
+  onClose: () => void;
   isMobile?: boolean;
 };
 
 export const ImportNetworkDialog = (p: P) => {
+  const { isOpen, onClose, isMobile } = p;
   const {importNetwork} = useNetworks(),
-    [isNew, setNew] = useState(false),
     {register, errors, handleSubmit, watch} = useForm<ImportNetworkForm>({
       validationSchema,
     });
@@ -59,32 +68,29 @@ export const ImportNetworkDialog = (p: P) => {
       if (sharedFile) {
         const sharedJSON = await toPlainText(sharedFile)
         importNetwork(sharedJSON, data.name).then(
-          (isSuccess) => isSuccess && setNew(false)
+          (isSuccess) => isSuccess && onClose()
         );
       }
 
     },
-    [importNetwork]
+    [importNetwork, onClose]
   );
 
   return (
     <>
-      <Button fullWidth color="primary" onClick={() => setNew(true)}>
-        import
-      </Button>
       <Dialog
         TransitionComponent={Transition}
         keepMounted
-        open={isNew}
-        fullScreen={p.isMobile}
+        open={isOpen}
+        fullScreen={isMobile}
         fullWidth
         maxWidth="sm"
-        onClose={() => setNew(false)}
+        onClose={onClose}
       >
-        <form onSubmit={handleSubmit(onImport)}>
+        <Form onSubmit={handleSubmit(onImport)}>
           <DialogTitle>Import Network</DialogTitle>
-          <FlexContent>
-            {isNew && (
+          <Content>
+            {isOpen && (
               <>
                 <TextField
                   name="name"
@@ -119,16 +125,16 @@ export const ImportNetworkDialog = (p: P) => {
                 </Button>
               </>
             )}
-          </FlexContent>
+          </Content>
           <DialogActions>
             <Button type="submit" color="primary" variant="outlined">
               import
             </Button>
-            <Button color="default" variant="outlined" onClick={() => setNew(false)}>
+            <Button color="default" variant="outlined" onClick={onClose}>
               cancel
             </Button>
           </DialogActions>
-        </form>
+        </Form>
       </Dialog>
     </>
   );

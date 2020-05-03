@@ -22,6 +22,8 @@ export interface Config {
     interface: string
     autostart: boolean
     mode: string
+    ip: string
+    mask: number
     deviceType: string | null
     device: string | null
     connectTo: Array<string> | null
@@ -35,9 +37,9 @@ export interface PeerInfo {
 }
 
 export interface Peer {
-    node: string
-    subnet: string
+    address: string
     fetched: boolean
+    config: Node | null
 }
 
 export interface Node {
@@ -56,14 +58,22 @@ export interface Address {
 
 export interface Sharing {
     name: string
+    subnet: string
     node: Array<Node> | null
 }
 
 export interface Upgrade {
-    subnet: string | null
     port: number | null
     address: Array<Address> | null
     device: string | null
+}
+
+
+
+export enum Duration {
+    minDuration = -1 << 63,
+    maxDuration = 1<<63 - 1,
+    Nanosecond = 1,
 }
 
 
@@ -254,12 +264,12 @@ export class TincWeb {
     /**
     Create new network if not exists
     **/
-    async create(name: string): Promise<Network> {
+    async create(name: string, subnet: string): Promise<Network> {
         return (await this.__call({
             "jsonrpc" : "2.0",
             "method" : "TincWeb.Create",
             "id" : this.__next_id(),
-            "params" : [name]
+            "params" : [name, subnet]
         })) as Network;
     }
 
@@ -372,6 +382,18 @@ In some cases requires restart
             "id" : this.__next_id(),
             "params" : [network, update]
         })) as Node;
+    }
+
+    /**
+    Generate Majordomo request for easy-sharing
+    **/
+    async majordomo(network: string, lifetime: Duration): Promise<string> {
+        return (await this.__call({
+            "jsonrpc" : "2.0",
+            "method" : "TincWeb.Majordomo",
+            "id" : this.__next_id(),
+            "params" : [network, lifetime]
+        })) as string;
     }
 
 

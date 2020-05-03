@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from "react";
 import {
-  Button,
   Divider,
   List,
   ListSubheader,
@@ -10,8 +9,6 @@ import { useNetworks } from "../../hooks/api/useNetworks";
 import { useHistory } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import {Network} from "../../api/tincweb";
-import {ImportNetworkDialog} from "./ImportNetworkDialog";
-import {AddNetworkForm} from "./AddNetworkForm";
 
 type P = {
   isMobile?: boolean
@@ -48,8 +45,6 @@ export const NetworkList = (p: P) => {
         </List>
       )}
       <Divider />
-      <AddNetworkForm />
-      <ImportNetworkDialog isMobile={p.isMobile} />
     </>
   );
 };
