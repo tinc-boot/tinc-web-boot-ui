@@ -1,36 +1,15 @@
-import React, { useCallback } from "react";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Slide,
-  styled,
-  TextField,
-} from "@material-ui/core";
+import React, {useCallback} from "react";
+import {Button, DialogActions, DialogContent, styled, TextField,} from "@material-ui/core";
 import * as yup from "yup";
-import { useNetworks } from "../../hooks/api/useNetworks";
-import { useForm } from "react-hook-form";
-import { TransitionProps } from "@material-ui/core/transitions";
+import {useNetworks} from "../../hooks/api/useNetworks";
+import {useForm} from "react-hook-form";
+import {BaseModal} from "../modals/BaseModal";
 
 const Content = styled(DialogContent)({
   flexGrow: 1,
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-});
-
-const Form = styled('form')({
-  flexGrow: 1,
-  display: 'flex',
-  flexDirection: 'column'
-})
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement<any, any> },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 type AddNetworkForm = {
@@ -68,37 +47,33 @@ export const AddNetworkModal = (p: P) => {
 
   return (
     <>
-      <Dialog
+      <BaseModal
         fullScreen={isMobile}
-        maxWidth="sm"
-        fullWidth
-        TransitionComponent={Transition}
         open={isOpen}
         onClose={onClose}
+        onSubmit={handleSubmit(onSubmit)}
       >
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Content>
-            <TextField
-              fullWidth
-              inputRef={register}
-              autoFocus
-              margin="dense"
-              label="Networks name"
-              name="name"
-              error={!!errors.name}
-              helperText={errors?.name?.message || "enter name for new network"}
-            />
-          </Content>
-          <DialogActions>
-            <Button color="secondary" onClick={onClose}>
-              cancel
-            </Button>
-            <Button color="primary" type="submit">
-              submit
-            </Button>
-          </DialogActions>
-        </Form>
-      </Dialog>
+        <Content>
+          <TextField
+            fullWidth
+            inputRef={register}
+            autoFocus
+            margin="dense"
+            label="Networks name"
+            name="name"
+            error={!!errors.name}
+            helperText={errors?.name?.message || "enter name for new network"}
+          />
+        </Content>
+        <DialogActions>
+          <Button color="secondary" onClick={onClose}>
+            cancel
+          </Button>
+          <Button color="primary" type="submit">
+            submit
+          </Button>
+        </DialogActions>
+      </BaseModal>
     </>
   );
 };
