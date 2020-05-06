@@ -1,9 +1,9 @@
 import React, {useCallback} from "react";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, styled, TextField,} from "@material-ui/core";
+import {Button, DialogActions, DialogContent, DialogTitle, styled, TextField,} from "@material-ui/core";
 import {useForm} from "react-hook-form";
 import * as yup from "yup";
 import {useNetworks} from "../../hooks/api/useNetworks";
-import {TransitionProps} from "@material-ui/core/transitions";
+import {BaseModal} from "../modals/BaseModal";
 
 const Content = styled(DialogContent)({
   flexGrow: 1,
@@ -17,13 +17,6 @@ const Form = styled('form')({
   display: 'flex',
   flexDirection: 'column'
 })
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement<any, any> },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 type ImportNetworkForm = {
   name: string;
@@ -78,13 +71,10 @@ export const ImportNetworkDialog = (p: P) => {
 
   return (
     <>
-      <Dialog
-        TransitionComponent={Transition}
+      <BaseModal
         keepMounted
         open={isOpen}
         fullScreen={isMobile}
-        fullWidth
-        maxWidth="sm"
         onClose={onClose}
       >
         <Form onSubmit={handleSubmit(onImport)}>
@@ -135,7 +125,7 @@ export const ImportNetworkDialog = (p: P) => {
             </Button>
           </DialogActions>
         </Form>
-      </Dialog>
+      </BaseModal>
     </>
   );
 };
