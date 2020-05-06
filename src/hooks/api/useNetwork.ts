@@ -2,7 +2,7 @@ import {useCallback, useState} from "react";
 import {useApi} from "./useApi";
 import {useFetching} from "../system/useFetching";
 import {dispatcher} from "../../store";
-import {Node} from "../../api/api";
+import {Node} from "../../api/tincweb";
 import {useStateSelector} from "../system/useStateSelector";
 import _ from "lodash";
 
@@ -41,5 +41,10 @@ export function useNetwork(name: string) {
     }
   }, [api, name, withFetching])
 
-  return {network, node, start, fetching, stop, remove, loadNetwork}
+  const shared = useCallback( async () => {
+    const res = await withFetching(api.share(name))
+    return JSON.stringify(res)
+  }, [api, name, withFetching])
+
+  return {network, node, start, fetching, stop, remove, loadNetwork, shared}
 }

@@ -1,21 +1,49 @@
-import {useCallback, useState} from "react";
-import {TincWeb} from "../../api/api";
+import {useCallback, useEffect, useState} from "react";
 import {Events} from "../../api/events";
+import {TincWeb} from "../../api/tincweb";
+import {TincWebUI} from "../../api/tincwebui";
+import {useStateSelector} from "../system/useStateSelector";
 
-let _api: TincWeb = new TincWeb();
-let _events: Events = new Events('ws://127.0.0.1:8686/api/events');
+function getHost() {
+  if (process.env.NODE_ENV === 'development') {
+    return '127.0.0.1:8686'
+  } else {
+    return window.location.host
+  }
+}
+
+const getApi = (token: string) => new TincWeb(`ws://${getHost()}/api/${token}/`);
+const getEvents = (token: string) => new Events(`ws://${getHost()}/api/${token}/events`);
+const getApiUI = (token: string) => new TincWebUI(`ws://${getHost()}/api/${token}/`);
+
+let api = getApi('default')
+let events = getEvents('default')
+let apiUI = getApiUI('default')
 
 export function useApi() {
-  const [api, setApi] = useState(_api),
-    [events, setEvents] = useState(_events);
+  const token = useStateSelector(s => s.system.token),
+    [prevToken, setPrevToken] = useState('default')
 
-  const createApi = useCallback(() => {
-    setApi(new TincWeb())
+  useEffect(() => {
+    if (token !== prevToken) {
+      api = getApi(token)
+      events = getEvents(token)
+      apiUI = getApiUI(token)
+      setPrevToken(token)
+    }
+  }, [prevToken, token])
+
+  const createApi = useCallback((baseURL: string) => {
+    api = new TincWeb(baseURL + '/api/' + process.env.REACT_APP_TOKEN)
   }, []);
 
-  const connectEvents = useCallback(() => {
-    setEvents(new Events('ws://127.0.0.1:8686/api/events'));
+  const connectEvents = useCallback((baseURL: string) => {
+    events = new Events(baseURL + '/api/' + process.env.REACT_APP_TOKEN + '/events')
   }, []);
 
-  return {api, events, createApi, connectEvents}
+  const createApiUI = useCallback((baseURL: string) => {
+    apiUI = new TincWebUI(baseURL + '/api/' + process.env.REACT_APP_TOKEN + '/')
+  }, [])
+
+  return {api, events, apiUI, createApi, connectEvents, createApiUI}
 }

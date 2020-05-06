@@ -1,4 +1,4 @@
-export class TincWebError extends Error {
+export class TincWebUIError extends Error {
     public readonly code: number;
     public readonly details: any;
 
@@ -10,60 +10,17 @@ export class TincWebError extends Error {
 }
 
 
-export interface Network {
-    name: string
-    running: boolean
-    config: Config | null
-}
-
-export interface Config {
-    name: string
-    port: number
-    interface: string
-    autostart: boolean
-    mode: string
-    deviceType: string | null
-    device: string | null
-    connectTo: Array<string> | null
-}
-
-export interface PeerInfo {
-    name: string
-    online: boolean
-    status: Peer | null
-    config: Node | null
-}
-
-export interface Peer {
-    node: string
-    subnet: string
-    fetched: boolean
-}
-
-export interface Node {
-    name: string
-    subnet: string
-    port: number
-    address: Array<Address> | null
-    publicKey: string
-    version: number
-}
-
-export interface Address {
+export interface Endpoint {
     host: string
-    port: number | null
+    port: number
+    kind: EndpointKind
 }
 
-export interface Sharing {
-    name: string
-    node: Array<Node> | null
-}
 
-export interface Upgrade {
-    subnet: string | null
-    port: number | null
-    address: Array<Address> | null
-    device: string | null
+
+export enum EndpointKind {
+    Local = "local",
+    Public = "public",
 }
 
 
@@ -199,16 +156,16 @@ class postExecutor {
 }
 
 /**
- Public Tinc-Web API (json-rpc 2.0)
- **/
-export class TincWeb {
+Operations with tinc-web-boot related to UI
+**/
+export class TincWebUI {
 
     private __id: number;
     private __executor:rpcExecutor;
 
 
-    // Create new API handler to TincWeb.
-    constructor(base_url : string = 'ws://127.0.0.1:8686/api') {
+    // Create new API handler to TincWebUI.
+    constructor(base_url : string = 'ws://127.0.0.1:8686/api/') {
         const proto = (new URL(base_url)).protocol;
         switch (proto) {
             case "ws:":
@@ -228,150 +185,39 @@ export class TincWeb {
 
 
     /**
-     List of available networks (briefly, without config)
-     **/
-    async networks(): Promise<Array<Network>> {
+    Issue and sign token
+    **/
+    async issueAccessToken(validDays: number): Promise<string> {
         return (await this.__call({
             "jsonrpc" : "2.0",
-            "method" : "TincWeb.Networks",
+            "method" : "TincWebUI.IssueAccessToken",
             "id" : this.__next_id(),
-            "params" : []
-        })) as Array<Network>;
+            "params" : [validDays]
+        })) as string;
     }
 
     /**
-     Detailed network info
-     **/
-    async network(name: string): Promise<Network> {
+    Make desktop notification if system supports it
+    **/
+    async notify(title: string, message: string): Promise<boolean> {
         return (await this.__call({
             "jsonrpc" : "2.0",
-            "method" : "TincWeb.Network",
+            "method" : "TincWebUI.Notify",
             "id" : this.__next_id(),
-            "params" : [name]
-        })) as Network;
-    }
-
-    /**
-     Create new network if not exists
-     **/
-    async create(name: string): Promise<Network> {
-        return (await this.__call({
-            "jsonrpc" : "2.0",
-            "method" : "TincWeb.Create",
-            "id" : this.__next_id(),
-            "params" : [name]
-        })) as Network;
-    }
-
-    /**
-     Remove network (returns true if network existed)
-     **/
-    async remove(network: string): Promise<boolean> {
-        return (await this.__call({
-            "jsonrpc" : "2.0",
-            "method" : "TincWeb.Remove",
-            "id" : this.__next_id(),
-            "params" : [network]
+            "params" : [title, message]
         })) as boolean;
     }
 
     /**
-     Start or re-start network
-     **/
-    async start(network: string): Promise<Network> {
+    Endpoints list to access web UI
+    **/
+    async endpoints(): Promise<Array<Endpoint>> {
         return (await this.__call({
             "jsonrpc" : "2.0",
-            "method" : "TincWeb.Start",
+            "method" : "TincWebUI.Endpoints",
             "id" : this.__next_id(),
-            "params" : [network]
-        })) as Network;
-    }
-
-    /**
-     Stop network
-     **/
-    async stop(network: string): Promise<Network> {
-        return (await this.__call({
-            "jsonrpc" : "2.0",
-            "method" : "TincWeb.Stop",
-            "id" : this.__next_id(),
-            "params" : [network]
-        })) as Network;
-    }
-
-    /**
-     Peers brief list in network  (briefly, without config)
-     **/
-    async peers(network: string): Promise<Array<PeerInfo>> {
-        return (await this.__call({
-            "jsonrpc" : "2.0",
-            "method" : "TincWeb.Peers",
-            "id" : this.__next_id(),
-            "params" : [network]
-        })) as Array<PeerInfo>;
-    }
-
-    /**
-     Peer detailed info by in the network
-     **/
-    async peer(network: string, name: string): Promise<PeerInfo> {
-        return (await this.__call({
-            "jsonrpc" : "2.0",
-            "method" : "TincWeb.Peer",
-            "id" : this.__next_id(),
-            "params" : [network, name]
-        })) as PeerInfo;
-    }
-
-    /**
-     Import another tinc-web network configuration file.
-     It means let nodes defined in config join to the network.
-     Return created (or used) network with full configuration
-     **/
-    async import(sharing: Sharing): Promise<Network> {
-        return (await this.__call({
-            "jsonrpc" : "2.0",
-            "method" : "TincWeb.Import",
-            "id" : this.__next_id(),
-            "params" : [sharing]
-        })) as Network;
-    }
-
-    /**
-     Share network and generate configuration file.
-     **/
-    async share(network: string): Promise<Sharing> {
-        return (await this.__call({
-            "jsonrpc" : "2.0",
-            "method" : "TincWeb.Share",
-            "id" : this.__next_id(),
-            "params" : [network]
-        })) as Sharing;
-    }
-
-    /**
-     Node definition in network (aka - self node)
-     **/
-    async node(network: string): Promise<Node> {
-        return (await this.__call({
-            "jsonrpc" : "2.0",
-            "method" : "TincWeb.Node",
-            "id" : this.__next_id(),
-            "params" : [network]
-        })) as Node;
-    }
-
-    /**
-     Upgrade node parameters.
-     In some cases requires restart
-     **/
-    async upgrade(network: string, update: Upgrade): Promise<Node> {
-        return (await this.__call({
-            "jsonrpc" : "2.0",
-            "method" : "TincWeb.Upgrade",
-            "id" : this.__next_id(),
-            "params" : [network, update]
-        })) as Node;
+            "params" : []
+        })) as Array<Endpoint>;
     }
 
 
@@ -391,7 +237,7 @@ export class TincWeb {
         }
 
         if (data.error) {
-            throw new TincWebError(data.error.message, data.error.code, data.error.data);
+            throw new TincWebUIError(data.error.message, data.error.code, data.error.data);
         }
 
         return data.result;

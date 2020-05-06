@@ -1,8 +1,18 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {faCheck, faNetworkWired, faPause, faPlay, faPlus, faSpinner} from '@fortawesome/free-solid-svg-icons'
+import {library} from '@fortawesome/fontawesome-svg-core'
+import {
+  faCheck,
+  faDownload,
+  faNetworkWired,
+  faPause,
+  faPlay,
+  faPlus,
+  faQrcode,
+  faSpinner,
+  faTrash,
+  faUpload
+} from '@fortawesome/free-solid-svg-icons'
 import _ from 'lodash'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {IconDefinition} from "@fortawesome/fontawesome-common-types";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {faTimes} from "@fortawesome/free-solid-svg-icons/faTimes";
 import {faSun} from "@fortawesome/free-solid-svg-icons/faSun";
@@ -23,7 +33,11 @@ export const fa = {
   faCheck,
   faTimes,
   faSun,
-  faMoon
+  faUpload,
+  faDownload,
+  faTrash,
+  faMoon,
+  faQrcode
 };
 
 export const faInit = () => {
