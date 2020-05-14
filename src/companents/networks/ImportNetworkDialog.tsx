@@ -1,5 +1,5 @@
 import React, {useCallback} from "react";
-import {Button, DialogActions, DialogContent, DialogTitle, styled, TextField,} from "@material-ui/core";
+import {Box, Button, DialogActions, DialogContent, DialogTitle, Divider, styled, TextField,} from "@material-ui/core";
 import {useForm} from "react-hook-form";
 import * as yup from "yup";
 import {useNetworks} from "../../hooks/api/useNetworks";
@@ -20,17 +20,24 @@ const Form = styled('form')({
 
 type ImportNetworkForm = {
   name: string;
-  sharedFile: FileList
+  sharedFile: FileList,
+  url: string
 };
+
+const FlexRow = styled('div')({
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: "center"
+})
 
 const validationSchema = yup.object().shape({
   name: yup
     .string()
     .notRequired()
-    .matches(/^[a-zA-Z0-9\-_@#%!&$]*$/)
-    .min(3)
-    .max(16),
-  sharedFile: yup.mixed().required()
+    .matches(/^[a-zA-Z0-9\-_@#%!&$]*$/),
+  sharedFile: yup.mixed(),
+  url: yup.string().url()
 });
 
 const toPlainText = (file: File) => new Promise<string>((resolve, reject) => {
@@ -48,7 +55,7 @@ type P = {
 
 export const ImportNetworkDialog = (p: P) => {
   const { isOpen, onClose, isMobile } = p;
-  const {importNetwork} = useNetworks(),
+  const {importNetwork, importMojordomo} = useNetworks(),
     {register, errors, handleSubmit, watch} = useForm<ImportNetworkForm>({
       validationSchema,
     });
@@ -63,10 +70,13 @@ export const ImportNetworkDialog = (p: P) => {
         importNetwork(sharedJSON, data.name).then(
           (isSuccess) => isSuccess && onClose()
         );
+      } else if (data.url) {
+        await importMojordomo(data.url)
+        onClose()
       }
 
     },
-    [importNetwork, onClose]
+    [importMojordomo, importNetwork, onClose]
   );
 
   return (
@@ -113,6 +123,22 @@ export const ImportNetworkDialog = (p: P) => {
                     style={{display: "none"}}
                   />
                 </Button>
+                <FlexRow>
+                  <Box flexGrow={1} p={2} mt={1} mb={1}>
+                    <Divider />
+                  </Box>
+                  <div>or</div>
+                  <Box flexGrow={1} p={2} mt={1} mb={1}>
+                    <Divider />
+                  </Box>
+                </FlexRow>
+                <TextField
+                  name="url"
+                  inputRef={register}
+                  label="URL"
+                  margin='normal'
+                  fullWidth
+                />
               </>
             )}
           </Content>
