@@ -1,6 +1,5 @@
 import React, { ReactNode } from "react";
 import { WebBootAppBar } from "../header/WebBootAppBar";
-import { Box } from "@material-ui/core";
 import { SWAlert } from "../alerts/sw/SWAlert";
 import styled from "@material-ui/core/styles/styled";
 

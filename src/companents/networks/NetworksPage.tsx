@@ -4,18 +4,13 @@ import { NetworkPage } from "./NetworkPage";
 import styled from "@material-ui/core/styles/styled";
 import {BottomNavigation, Container} from "@material-ui/core";
 
-const FlexContainer = styled("div")((p) => ({
+const FlexContainer = styled("div")(() => ({
   flexGrow: 1,
   minHeight: "100%",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
   alignItems: "stretch",
-}));
-
-const Content = styled(Container)(p => ({
-  flexGrow: 1,
-  paddingTop: p.theme.spacing(2)
 }));
 
 const Bottom = styled("div")({});

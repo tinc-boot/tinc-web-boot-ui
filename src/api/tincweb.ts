@@ -22,30 +22,24 @@ export interface Config {
     interface: string
     autostart: boolean
     mode: string
-    ip: string
     mask: number
     deviceType: string | null
     device: string | null
     connectTo: Array<string> | null
+    broadcast: string
 }
 
 export interface PeerInfo {
     name: string
     online: boolean
-    status: Peer | null
-    config: Node | null
-}
-
-export interface Peer {
-    address: string
-    fetched: boolean
-    config: Node | null
+    config: Node
 }
 
 export interface Node {
     name: string
     subnet: string
     port: number
+    ip: string
     address: Array<Address> | null
     publicKey: string
     version: number
@@ -70,11 +64,7 @@ export interface Upgrade {
 
 
 
-export enum Duration {
-    minDuration = -1 << 63,
-    maxDuration = 1<<63 - 1,
-    Nanosecond = 1,
-}
+export type Duration = string; // suffixes: ns, us, ms, s, m, h
 
 
 // support stuff
@@ -394,6 +384,18 @@ In some cases requires restart
             "id" : this.__next_id(),
             "params" : [network, lifetime]
         })) as string;
+    }
+
+    /**
+    Join by Majordomo Link
+    **/
+    async join(url: string, start: boolean): Promise<Network> {
+        return (await this.__call({
+            "jsonrpc" : "2.0",
+            "method" : "TincWeb.Join",
+            "id" : this.__next_id(),
+            "params" : [url, start]
+        })) as Network;
     }
 
 

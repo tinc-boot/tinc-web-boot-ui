@@ -3,6 +3,7 @@ import {Events} from "../../api/events";
 import {TincWeb} from "../../api/tincweb";
 import {TincWebUI} from "../../api/tincwebui";
 import {useStateSelector} from "../system/useStateSelector";
+import {TincWebMajordomo} from "../../api/tincwebmajordomo";
 
 function getHost() {
   if (process.env.NODE_ENV === 'development') {
@@ -15,10 +16,12 @@ function getHost() {
 const getApi = (token: string) => new TincWeb(`ws://${getHost()}/api/${token}/`);
 const getEvents = (token: string) => new Events(`ws://${getHost()}/api/${token}/events`);
 const getApiUI = (token: string) => new TincWebUI(`ws://${getHost()}/api/${token}/`);
+const getMojordomo = (token: string) => new TincWebMajordomo(`ws://${getHost()}/api/${token}/`);
 
 let api = getApi('default')
 let events = getEvents('default')
 let apiUI = getApiUI('default')
+let mojordomo = getMojordomo('default')
 
 export function useApi() {
   const token = useStateSelector(s => s.system.token),
@@ -29,6 +32,7 @@ export function useApi() {
       api = getApi(token)
       events = getEvents(token)
       apiUI = getApiUI(token)
+      mojordomo = getMojordomo(token)
       setPrevToken(token)
     }
   }, [prevToken, token])
@@ -45,5 +49,5 @@ export function useApi() {
     apiUI = new TincWebUI(baseURL + '/api/' + process.env.REACT_APP_TOKEN + '/')
   }, [])
 
-  return {api, events, apiUI, createApi, connectEvents, createApiUI}
+  return {api, events, apiUI, mojordomo, createApi, connectEvents, createApiUI}
 }

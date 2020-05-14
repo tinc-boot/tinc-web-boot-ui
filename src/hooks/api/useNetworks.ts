@@ -3,9 +3,15 @@ import {useCallback, useEffect} from "react";
 import {useApi} from "./useApi";
 import {dispatcher} from "../../store";
 import {useFetching} from "../system/useFetching";
-import {Sharing} from "../../api/tincweb";
+import {Network, Sharing} from "../../api/tincweb";
 
 const defaultSubnet = '10.165.0.0/16'
+export interface JWTData {
+  "iat":string,
+  "network":string,
+  "role":string,
+  "subnet":string
+}
 
 export function useNetworks() {
   const {api, events} = useApi();
@@ -14,7 +20,7 @@ export function useNetworks() {
 
   const loadNetworks = useCallback(async () => {
     try {
-      const networks = await withFetching(api.networks())
+      const networks: Network[] = await withFetching(api.networks())
       dispatcher.networks.setList(networks)
     } catch (e) {
       // TODO notify error
@@ -22,9 +28,9 @@ export function useNetworks() {
     }
   }, [api, withFetching]);
 
-  const createNetwork = useCallback(async (name: string) => {
+  const createNetwork = useCallback(async (name: string, subnet: string = defaultSubnet) => {
     try {
-      const n = await withFetching(api.create(name, defaultSubnet))
+      const n = await withFetching(api.create(name, subnet))
       dispatcher.networks.add(n)
     } catch (e) {
       // TODO notify error
@@ -48,10 +54,15 @@ export function useNetworks() {
     });
   }, [api, withFetching])
 
+  const importMojordomo = useCallback(async (url: string) => {
+    await withFetching(api.join(url, true))
+    await loadNetworks()
+  } , [api, loadNetworks, withFetching])
+
   useEffect(() => {
     events.onStarted(loadNetworks);
     events.onStopped(loadNetworks);
   }, [events, loadNetworks])
 
-  return {networks, loadNetworks, fetching, createNetwork, importNetwork}
+  return {networks, loadNetworks, fetching, createNetwork, importNetwork, importMojordomo}
 }
