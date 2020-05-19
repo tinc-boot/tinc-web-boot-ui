@@ -12,6 +12,7 @@ import styled from "@material-ui/core/styles/styled";
 import { useNetwork } from "../../hooks/api/useNetwork";
 import { useHistory } from "react-router";
 import FileSaver from "file-saver";
+import {PeerList} from "../peers/PeerList";
 
 const Header = styled(Box)({
   display: "flex",
@@ -33,11 +34,11 @@ const FlexContainer = styled("div")(() => ({
   alignItems: "stretch",
 }));
 
-const Content = styled(Container)(p => ({
+const Content = styled(Container)((p) => ({
   flexGrow: 1,
-  paddingTop: p.theme.spacing(2)
+  paddingTop: p.theme.spacing(2),
 }));
-const Bottom = styled("div")({})
+const Bottom = styled("div")({});
 
 type P = {
   networkName: string;
@@ -60,7 +61,7 @@ export const NetworkPage = (p: P) => {
     () => ({
       onAction: network?.running ? stop : start,
       icon: (network?.running ? "faPause" : "faPlay") as IconType,
-      mainActionName: network?.running ? 'Stop' : 'Start'
+      mainActionName: network?.running ? "Stop" : "Start",
     }),
     [network, start, stop]
   );
@@ -78,8 +79,7 @@ export const NetworkPage = (p: P) => {
   }, [p.networkName, shared]);
 
   useEffect(() => {
-    loadNetwork()
-      .catch(console.error);
+    loadNetwork().catch(console.error);
   }, [loadNetwork]);
 
   return (
@@ -94,6 +94,7 @@ export const NetworkPage = (p: P) => {
         {node && (
           <Typography variant="subtitle1">subnet: {node.subnet}</Typography>
         )}
+        <PeerList networkName={p.networkName}/>
       </Content>
       <Bottom>
         <BottomNavigation showLabels>
@@ -101,21 +102,27 @@ export const NetworkPage = (p: P) => {
             disabled={fetching}
             label="Shared"
             onClick={onShared}
-            icon={<Icon icon="faDownload" size='2x' />}
+            icon={<Icon icon="faDownload" size="2x" />}
           />
           <BottomNavigationAction
             disabled={fetching}
             label={mainActionName}
             showLabel={!fetching}
             onClick={onAction}
-            icon={<Icon icon={fetching ? "faSpinner" : icon} spin={fetching} size='2x' />}
+            icon={
+              <Icon
+                icon={fetching ? "faSpinner" : icon}
+                spin={fetching}
+                size="2x"
+              />
+            }
           />
           <BottomNavigationAction
             disabled={fetching}
             label="Delete"
             color="secondary"
             onClick={onRemove}
-            icon={<Icon icon="faTrash" size='2x' />}
+            icon={<Icon icon="faTrash" size="2x" />}
           />
         </BottomNavigation>
       </Bottom>
