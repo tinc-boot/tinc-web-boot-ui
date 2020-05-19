@@ -8,13 +8,13 @@ export const useFetching = () => {
   const globalFetching = useStateSelector(s => s.system.fetching),
     [fetching, setFetching] = useState(false);
 
-  const withFetching = useCallback( <T>(task: Task<T>): Promise<T> => {
-    dispatcher.system.inc();
+  const withFetching = useCallback( <T>(task: Task<T>, shadow: boolean = false): Promise<T> => {
+    if (!shadow) dispatcher.system.inc();
     setFetching(true);
     const p = typeof task === 'function' ? task() : task;
     p.finally(() => {
       setTimeout(() => {
-        dispatcher.system.dec();
+        if (!shadow) dispatcher.system.dec();
         setFetching(false);
       }, 100)
     });
